@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}My Incoming Requests{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem; max-width: 1000px;">
+    <!-- Page Header -->
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h1 style="color: white; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">
+            My Incoming Requests
+        </h1>
+        <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem;">
+            Manage your skill swap requests from other users
+        </p>
+    </div>
+
+    {% if requests %}
+        <div class="requests-grid">
+            {% for req in requests %}
+                <div class="request-card" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 2rem; transition: all 0.3s ease;">
+                    <!-- User Info Header -->
+                    <div class="user-info" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div class="avatar" style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.3rem;">
+                            {{ req.sender.name|slice:":1"|upper }}
+                        </div>
+                        <div>
+                            <h3 style="color: white; font-size: 1.3rem; font-weight: 600; margin: 0;">
+                                {{ req.sender.name }}
+                            </h3>
+                            <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin: 0;">
+                                {{ req.sender.username }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Request Details -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">
+                                    They Offer:
+                                </label>
+                                <div class="skills-tag" style="background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; display: inline-block;">
+                                    {{ req.skill_offered }}
+                                </div>
+                            </div>
+                            <div>
+                                <label style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">
+                                    They Want:
+                                </label>
+                                <div class="skills-tag" style="background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; display: inline-block;">
+                                    {{ req.skill_learn }}
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if req.message %}
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">
+                                Message:
+                            </label>
+                            <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 1rem; color: white; font-size: 0.95rem; line-height: 1.5;">
+                                {{ req.message }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Status Badge -->
+                        <div style="margin-bottom: 1rem;">
+                            <span style="padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; 
+                                {% if req.status == 'Pending' %}
+                                    background: rgba(255, 165, 0, 0.2); color: #ffb84d; border: 1px solid rgba(255, 165, 0, 0.3);
+                                {% elif req.status == 'Accepted' %}
+                                    background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3);
+                                {% else %}
+                                    background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);
+                                {% endif %}
+                            ">
+                                {{ req.status }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    {% if req.status == 'Pending' %}
+                    <form method="POST" action="{% url 'handle_request' req.id %}" style="margin-top: 1.5rem;">
+                        {% csrf_token %}
+                        
+                        <!-- Suggestion Input -->
+                        <div style="margin-bottom: 1.5rem;">
+                            <label for="suggestion-{{ req.id }}" style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">
+                                Your suggestion or note (optional):
+                            </label>
+                            <textarea name="suggestion" id="suggestion-{{ req.id }}" rows="3" 
+                                style="width: 100%; padding: 0.8rem; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; background: rgba(255, 255, 255, 0.05); color: white; font-size: 0.95rem; resize: vertical; font-family: inherit;"
+                                placeholder="Add a note or suggestion for the skill swap..."></textarea>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <button type="submit" name="action" value="Accepted" 
+                                style="background: #22c55e; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; flex: 1; min-width: 120px;"
+                                onmouseover="this.style.background='#16a34a'; this.style.transform='translateY(-2px)'"
+                                onmouseout="this.style.background='#22c55e'; this.style.transform='translateY(0)'">
+                                ✓ Accept
+                            </button>
+                            <button type="submit" name="action" value="Rejected" 
+                                style="background: #ef4444; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; flex: 1; min-width: 120px;"
+                                onmouseover="this.style.background='#dc2626'; this.style.transform='translateY(-2px)'"
+                                onmouseout="this.style.background='#ef4444'; this.style.transform='translateY(0)'">
+                                ✗ Reject
+                            </button>
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div style="text-align: center; padding: 4rem 2rem; color: rgba(255, 255, 255, 0.6);">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">📭</div>
+            <h3 style="color: rgba(255, 255, 255, 0.8); font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem;">
+                No incoming requests
+            </h3>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+                When someone wants to swap skills with you, their requests will appear here.
+            </p>
+            <a href="/" style="background: white; color: black; padding: 1rem 2rem; border-radius: 25px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; display: inline-block;"
+               onmouseover="this.style.background='#ccc'; this.style.transform='translateY(-2px)'"
+               onmouseout="this.style.background='white'; this.style.transform='translateY(0)'">
+                Explore Skills
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .request-card:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1);
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .form-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    @media (max-width: 768px) {
+        .requests-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .user-info {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .request-card > div:first-child {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}

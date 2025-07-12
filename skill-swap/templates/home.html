@@ -1,0 +1,702 @@
+{% extends "base.html" %}
+{% block title %}Home - SkillSwap{% endblock %}
+
+{% block content %}
+<div class="app-container">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="pulse-dot"></span>
+                Live Community
+            </div>
+            <h1 class="hero-title">
+                <span class="gradient-text">SkillSwap</span>
+            </h1>
+            <p class="hero-subtitle">Where knowledge meets opportunity</p>
+            <div class="hero-glow"></div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="how-it-works">
+        <div class="section-header">
+            <h2 class="section-title">How it works</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <h3>Share Skills</h3>
+                    <p>Add skills you can teach</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-card">
+                    <div class="step-number">02</div>
+                    <h3>Discover</h3>
+                    <p>Find skills you want to learn</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-card">
+                    <div class="step-number">03</div>
+                    <h3>Connect</h3>
+                    <p>Exchange knowledge seamlessly</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Users Section -->
+    {% if user.is_authenticated %}
+        <!-- Authenticated View -->
+        {% if users %}
+        <section class="users-section">
+            <div class="section-header">
+                <h2 class="section-title">Available Now</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="users-grid">
+                {% for user_profile in users %}
+                <div class="user-card">
+                    <div class="card-glow"></div>
+                    <div class="user-header">
+                        <div class="user-avatar">
+                            {% if user_profile.profile %}
+                                <img src="{{ user_profile.profile.url }}" alt="{{ user_profile.name }}">
+                            {% else %}
+                                <span class="avatar-initial">{{ user_profile.name|slice:":1"|upper }}</span>
+                            {% endif %}
+                            <div class="online-indicator"></div>
+                        </div>
+                        <div class="user-info">
+                            <h3>{{ user_profile.name }}</h3>
+                            <p>{{ user_profile.city }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="skills-section">
+                        <div class="skill-group teach">
+                            <div class="skill-header">
+                                <h4>Can Teach</h4>
+                                <div class="skill-indicator teach-indicator"></div>
+                            </div>
+                            <p>{{ user_profile.skills }}</p>
+                        </div>
+                        
+                        <div class="skill-group learn">
+                            <div class="skill-header">
+                                <h4>Wants to Learn</h4>
+                                <div class="skill-indicator learn-indicator"></div>
+                            </div>
+                            <p>{{ user_profile.skills_wanted }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="user-actions">
+                        <a href="{% url 'send_request' user_profile.username %}" class="connect-btn">
+                            <span class="btn-text">Connect</span>
+                            <div class="btn-glow"></div>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% else %}
+        <section class="empty-state">
+            <div class="empty-content">
+                <div class="empty-icon">
+                    <div class="icon-circle"></div>
+                </div>
+                <h3>No users available</h3>
+                <p>Be the first to add your skills</p>
+            </div>
+        </section>
+        {% endif %}
+    {% else %}
+        {% comment %} <!-- Non-authenticated View -->
+        <section class="preview-section">
+            <div class="section-header">
+                <h2 class="section-title">Join the Community</h2>
+                <div class="section-line"></div>
+            </div>
+            
+            <div class="preview-grid">
+                <div class="preview-card">
+                    <div class="card-glow"></div>
+                    <div class="preview-header">
+                        <div class="preview-avatar">J</div>
+                        <div class="preview-info">
+                            <h3>John D.</h3>
+                            <p>New York</p>
+                        </div>
+                    </div>
+                    <div class="preview-skills">
+                        <div class="skill-tag teach">Web Development</div>
+                        <div class="skill-tag learn">Guitar</div>
+                    </div>
+                </div>
+                
+                <div class="preview-card">
+                    <div class="card-glow"></div>
+                    <div class="preview-header">
+                        <div class="preview-avatar">S</div>
+                        <div class="preview-info">
+                            <h3>Sarah M.</h3>
+                            <p>Los Angeles</p>
+                        </div>
+                    </div>
+                    <div class="preview-skills">
+                        <div class="skill-tag teach">Photography</div>
+                        <div class="skill-tag learn">Cooking</div>
+                    </div>
+                </div>
+                
+                <div class="preview-card">
+                    <div class="card-glow"></div>
+                    <div class="preview-header">
+                        <div class="preview-avatar">M</div>
+                        <div class="preview-info">
+                            <h3>Mike K.</h3>
+                            <p>Chicago</p>
+                        </div>
+                    </div>
+                    <div class="preview-skills">
+                        <div class="skill-tag teach">Music</div>
+                        <div class="skill-tag learn">Programming</div>
+                    </div>
+                </div>
+            </div> {% endcomment %}
+            
+            <div class="cta-section">
+                <div class="cta-content">
+                    <p>Ready to unlock your potential?</p>
+                    <div class="cta-buttons">
+                        <a href="{% url 'signup' %}" class="primary-btn">
+                            <span>Join SkillSwap</span>
+                            <div class="btn-glow"></div>
+                        </a>
+                        <a href="{% url 'login_view' %}" class="secondary-btn">
+                            <span>Sign In</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+       
+    {% endif %}
+</div>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: #0a0a0a;
+        color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        overflow-x: hidden;
+    }
+
+    .app-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    /* Hero Section */
+    .hero {
+        position: relative;
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        font-size: 0.875rem;
+        margin-bottom: 32px;
+        backdrop-filter: blur(10px);
+    }
+
+    .pulse-dot {
+        width: 8px;
+        height: 8px;
+        background: #00ff88;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    .hero-title {
+        font-size: clamp(3rem, 8vw, 6rem);
+        font-weight: 700;
+        margin-bottom: 24px;
+        line-height: 1.1;
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        color: #888;
+        margin-bottom: 48px;
+        font-weight: 300;
+    }
+
+    .hero-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    /* Section Headers */
+    .section-header {
+        text-align: center;
+        margin-bottom: 64px;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: #ffffff;
+    }
+
+    .section-line {
+        width: 60px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #ffffff, transparent);
+        margin: 0 auto;
+    }
+
+    /* How it works */
+    .how-it-works {
+        padding: 120px 0;
+    }
+
+    .steps-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 32px;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .step {
+        position: relative;
+    }
+
+    .step-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 32px;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .step-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .step-card:hover::before {
+        opacity: 1;
+    }
+
+    .step-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .step-number {
+        font-size: 3rem;
+        font-weight: 200;
+        color: #333;
+        margin-bottom: 16px;
+    }
+
+    .step-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 12px;
+        color: #ffffff;
+    }
+
+    .step-card p {
+        color: #888;
+        font-size: 1rem;
+    }
+
+    /* Users Section */
+    .users-section, .preview-section {
+        padding: 120px 0;
+    }
+
+    .users-grid, .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+    }
+
+    .user-card, .preview-card {
+        position: relative;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 24px;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .card-glow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .user-card:hover .card-glow,
+    .preview-card:hover .card-glow {
+        opacity: 1;
+    }
+
+    .user-card:hover,
+    .preview-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .user-header, .preview-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .user-avatar, .preview-avatar {
+        position: relative;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #333, #555);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.2rem;
+        overflow: hidden;
+    }
+
+    .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .online-indicator {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 14px;
+        height: 14px;
+        background: #00ff88;
+        border: 2px solid #0a0a0a;
+        border-radius: 50%;
+    }
+
+    .user-info h3, .preview-info h3 {
+        color: #ffffff;
+        font-size: 1.25rem;
+        margin-bottom: 4px;
+    }
+
+    .user-info p, .preview-info p {
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .skills-section {
+        margin-bottom: 24px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .skill-group {
+        margin-bottom: 16px;
+    }
+
+    .skill-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .skill-group h4 {
+        color: #ffffff;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .skill-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+
+    .teach-indicator {
+        background: #00ff88;
+    }
+
+    .learn-indicator {
+        background: #ff6b6b;
+    }
+
+    .skill-group p {
+        color: #ccc;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .preview-skills {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .skill-tag {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .skill-tag.teach {
+        background: rgba(0, 255, 136, 0.1);
+        color: #00ff88;
+        border: 1px solid rgba(0, 255, 136, 0.2);
+    }
+
+    .skill-tag.learn {
+        background: rgba(255, 107, 107, 0.1);
+        color: #ff6b6b;
+        border: 1px solid rgba(255, 107, 107, 0.2);
+    }
+
+    .user-actions {
+        position: relative;
+        z-index: 2;
+    }
+
+    .connect-btn, .primary-btn, .secondary-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 24px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .connect-btn, .primary-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .connect-btn:hover, .primary-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .secondary-btn {
+        background: transparent;
+        color: #888;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-left: 12px;
+    }
+
+    .secondary-btn:hover {
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-glow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .connect-btn:hover .btn-glow,
+    .primary-btn:hover .btn-glow {
+        opacity: 1;
+    }
+
+    .btn-text {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        text-align: center;
+        margin-top: 80px;
+        padding: 48px 0;
+    }
+
+    .cta-content p {
+        font-size: 1.25rem;
+        color: #888;
+        margin-bottom: 32px;
+    }
+
+    .cta-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 120px 0;
+        text-align: center;
+    }
+
+    .empty-content {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .empty-icon {
+        margin-bottom: 24px;
+    }
+
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin: 0 auto;
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        color: #ffffff;
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: #888;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .app-container {
+            padding: 0 16px;
+        }
+
+        .hero {
+            min-height: 60vh;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .how-it-works, .users-section, .preview-section {
+            padding: 80px 0;
+        }
+
+        .steps-container {
+            grid-template-columns: 1fr;
+        }
+
+        .users-grid, .preview-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .cta-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .secondary-btn {
+            margin-left: 0;
+            margin-top: 12px;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Send Skill Swap Request{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem; max-width: 700px;">
+    <!-- Page Header -->
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h1 style="color: white; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">
+            Send Request
+        </h1>
+        <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem;">
+            Connect with {{ receiver.name }} for a skill swap
+        </p>
+    </div>
+
+    <!-- Recipient Info Card -->
+    <div style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 2rem; margin-bottom: 2rem;">
+        <div class="user-info" style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1rem;">
+            <div class="avatar" style="width: 70px; height: 70px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.5rem;">
+                {{ receiver.name|slice:":1"|upper }}
+            </div>
+            <div>
+                <h3 style="color: white; font-size: 1.4rem; font-weight: 600; margin: 0;">
+                    {{ receiver.name }}
+                </h3>
+                <p style="color: rgba(255, 255, 255, 0.6); font-size: 1rem; margin: 0;">
+                    {{ receiver.username }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Form -->
+    <div class="card" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 2rem;">
+        <form method="POST" action="{% url 'send_request' receiver.username %}">
+            {% csrf_token %}
+
+            <!-- Skills Exchange Section -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                <!-- Your Skill -->
+                <div class="form-group">
+                    <label for="skillOffered" style="color: white; font-size: 1rem; font-weight: 600; display: block; margin-bottom: 0.8rem;">
+                        🎯 Your Skill to Offer:
+                    </label>
+                    <div style="background: rgba(34, 197, 94, 0.1); border: 2px solid rgba(34, 197, 94, 0.3); border-radius: 15px; padding: 1rem; color: white; font-size: 1rem; font-weight: 500; text-align: center;">
+                        {{ sender.skills }}
+                    </div>
+                    <input type="hidden" name="skill_offered" value="{{ sender.skills }}">
+                </div>
+
+                <!-- Skill You Want -->
+                <div class="form-group">
+                    <label for="skillWanted" style="color: white; font-size: 1rem; font-weight: 600; display: block; margin-bottom: 0.8rem;">
+                        🎓 Skill You Want to Learn:
+                    </label>
+                    <div style="background: rgba(59, 130, 246, 0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 15px; padding: 1rem; color: white; font-size: 1rem; font-weight: 500; text-align: center;">
+                        {{ receiver.skills }}
+                    </div>
+                    <input type="hidden" name="skill_wanted" value="{{ receiver.skills }}">
+                </div>
+            </div>
+
+            <!-- Exchange Visual -->
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="color: rgba(255, 255, 255, 0.6); font-size: 2rem; margin: 1rem 0;">
+                    ⇄
+                </div>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; font-style: italic;">
+                    Perfect skill match! Let's make this happen.
+                </p>
+            </div>
+
+            <!-- Message Section -->
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label for="message" style="color: white; font-size: 1rem; font-weight: 600; display: block; margin-bottom: 0.8rem;">
+                    💬 Personal Message (Optional):
+                </label>
+                <textarea id="message" name="message" rows="4" 
+                    style="width: 100%; padding: 1rem; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 15px; background: rgba(255, 255, 255, 0.05); color: white; font-size: 1rem; resize: vertical; font-family: inherit; line-height: 1.5;"
+                    placeholder="Hi {{ receiver.name }}, I'm interested in swapping skills with you! I think we could both benefit from this exchange. Looking forward to hearing from you."></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="{% url 'home' %}" 
+                   style="background: rgba(255, 255, 255, 0.1); color: white; padding: 1rem 2rem; border-radius: 25px; text-decoration: none; font-weight: 600; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; min-width: 120px; text-align: center;"
+                   onmouseover="this.style.background='rgba(255, 255, 255, 0.2)'; this.style.transform='translateY(-2px)'"
+                   onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.transform='translateY(0)'">
+                    ← Cancel
+                </a>
+                <button type="submit" 
+                    style="background: white; color: black; padding: 1rem 2rem; border-radius: 25px; border: none; font-weight: 600; cursor: pointer; transition: all 0.3s ease; min-width: 120px; font-size: 1rem;"
+                    onmouseover="this.style.background='#ccc'; this.style.transform='translateY(-2px)'"
+                    onmouseout="this.style.background='white'; this.style.transform='translateY(0)'">
+                    🚀 Send Request
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tips Section -->
+    <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 1.5rem; margin-top: 2rem;">
+        <h4 style="color: white; font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            💡 Tips for a successful skill swap:
+        </h4>
+        <ul style="color: rgba(255, 255, 255, 0.7); font-size: 0.95rem; line-height: 1.6; margin: 0; padding-left: 1.5rem;">
+            <li>Be specific about what you can teach and what you want to learn</li>
+            <li>Mention your experience level and availability</li>
+            <li>Suggest a format for the exchange (online/offline, duration, etc.)</li>
+            <li>Be respectful and professional in your communication</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+    .card:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1);
+    }
+
+    textarea:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    textarea::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+        
+        .card > form > div:first-child {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .user-info {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .card > form > div:last-child {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
